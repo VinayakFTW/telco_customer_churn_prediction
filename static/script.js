@@ -42,10 +42,9 @@ document.addEventListener('DOMContentLoaded', () => {
         showLoading(true);
         hideResult();
 
-        // 1. Collect and Encode Data
         const formData = collectFormData();
+        console.log('Data to be sent:', formData);
 
-        // 2. Send Data to Flask API
         try {
             const response = await fetch('/predict', {
                 method: 'POST',
@@ -62,12 +61,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const data = await response.json();
 
-            // 3. Display the Result
             displayResult(data.prediction);
 
         } catch (error) {
             console.error('Prediction Error:', error);
-            displayResult(-1, error.message); // Show an error state
+            displayResult(-1, error.message);
         } finally {
             showLoading(false);
         }
@@ -118,9 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function collectFormData() {
-        // This function MUST create an object with the 26 feature names
-        // that the preprocessed model was trained on.
-
+        
         // Get simple 1:1 values
         const gender = document.getElementById('gender').checked ? 1 : 0;
         const seniorCitizen = document.getElementById('senior-citizen').checked ? 1 : 0;
@@ -129,28 +125,22 @@ document.addEventListener('DOMContentLoaded', () => {
         const tenure = parseInt(tenureSlider.value, 10);
         const phoneService = document.getElementById('phone-service').checked ? 1 : 0;
         const paperlessBilling = document.getElementById('paperless-billing').checked ? 1 : 0;
-        const monthlyCharges = parseFloat(document.getElementById('monthly-charges').value);
-        const totalCharges = parseFloat(document.getElementById('total-charges').value);
+        let monthlyCharges = parseFloat(document.getElementById('monthly-charges').value);
+        let totalCharges = parseFloat(document.getElementById('total-charges').value);
 
-        // Get simple 'Yes'/'No'/'No Service' values
-        // Note: 'No internet service' and 'No phone service' are both encoded as '0' in the sample
-        // 'Yes' is 1. This logic assumes the 'No' (e.g. 'No internet') disables the sub-options.
-        const multipleLines = document.getElementById('multiple-lines').checked ? 1 : 0;
-        const onlineSecurity = document.getElementById('online-security').checked ? 1 : 0;
-        const onlineBackup = document.getElementById('online-backup').checked ? 1 : 0;
-        const deviceProtection = document.getElementById('device-protection').checked ? 1 : 0;
-        const techSupport = document.getElementById('tech-support').checked ? 1 : 0;
-        const streamingTV = document.getElementById('streaming-tv').checked ? 1 : 0;
-        const streamingMovies = document.getElementById('streaming-movies').checked ? 1 : 0;
-
-
-        // --- One-Hot Encoding ---
+        if (isNaN(monthlyCharges)) {
+            monthlyCharges = 0.0;
+        }
+        if (isNaN(totalCharges)) {
+            totalCharges = 0.0;
+        }
 
         // Internet Service
         const internetService = document.querySelector('input[name="internet-service"]:checked').value;
         const internetService_DSL = (internetService === 'dsl') ? 1 : 0;
         const internetService_Fiber = (internetService === 'fiber') ? 1 : 0;
         const internetService_No = (internetService === 'no') ? 1 : 0;
+        const hasInternet = (internetService !== 'no');
 
         // Contract
         const contract = document.querySelector('input[name="contract"]:checked').value;
@@ -165,37 +155,107 @@ document.addEventListener('DOMContentLoaded', () => {
         const payment_ElectronicCheck = (paymentMethod === 'electronic-check') ? 1 : 0;
         const payment_MailedCheck = (paymentMethod === 'mailed-check') ? 1 : 0;
 
+        // Get checkbox states
+        const multipleLinesChecked = document.getElementById('multiple-lines').checked;
+        const onlineBackupChecked = document.getElementById('online-backup').checked;
+        const deviceProtectionChecked = document.getElementById('device-protection').checked;
+        const techSupportChecked = document.getElementById('tech-support').checked;
+        const streamingTVChecked = document.getElementById('streaming-tv').checked;
+        const streamingMoviesChecked = document.getElementById('streaming-movies').checked;
 
-        // Assemble the final feature object.
-        // The keys MUST match your model's training columns.
-        // This is based on the 'preprocessed_telco_churn.csv' structure.
-        return {
-            'gender': gender,
-            'SeniorCitizen': seniorCitizen,
+        // Multiple Lines
+        const multipleLines_Yes = (phoneService === 1 && multipleLinesChecked) ? 1 : 0;
+        const multipleLines_No = (phoneService === 1 && !multipleLinesChecked) ? 1 : 0;
+        const multipleLines_No_phone_service = (phoneService === 0) ? 1 : 0;
+
+        // Tech Support
+        const techSupport_Yes = (hasInternet && techSupportChecked) ? 1 : 0;
+        const techSupport_No = (hasInternet && !techSupportChecked) ? 1 : 0;
+        const techSupport_No_internet_service = (!hasInternet) ? 1 : 0;
+
+        // Online Backup
+        const onlineBackup_Yes = (hasInternet && onlineBackupChecked) ? 1 : 0;
+        const onlineBackup_No = (hasInternet && !onlineBackupChecked) ? 1 : 0;
+        const onlineBackup_No_internet_service = (!hasInternet) ? 1 : 0;
+
+        // Device Protection
+        const deviceProtection_Yes = (hasInternet && deviceProtectionChecked) ? 1 : 0;
+        const deviceProtection_No = (hasInternet && !deviceProtectionChecked) ? 1 : 0;
+        const deviceProtection_No_internet_service = (!hasInternet) ? 1 : 0;
+
+        // Streaming TV
+        const streamingTV_Yes = (hasInternet && streamingTVChecked) ? 1 : 0;
+        const streamingTV_No = (hasInternet && !streamingTVChecked) ? 1 : 0;
+        const streamingTV_No_internet_service = (!hasInternet) ? 1 : 0;
+
+        // Streaming Movies
+        const streamingMovies_Yes = (hasInternet && streamingMoviesChecked) ? 1 : 0;
+        const streamingMovies_No = (hasInternet && !streamingMoviesChecked) ? 1 : 0;
+        const streamingMovies_No_internet_service = (!hasInternet) ? 1 : 0;
+
+        const featuresObject = {
             'Partner': partner,
+            'gender': gender,
             'Dependents': dependents,
-            'tenure': tenure,
-            'PhoneService': phoneService,
-            'MultipleLines': multipleLines,
-            'OnlineSecurity': onlineSecurity,
-            'OnlineBackup': onlineBackup,
-            'DeviceProtection': deviceProtection,
-            'TechSupport': techSupport,     
-            'StreamingTV': streamingTV,
-            'StreamingMovies': streamingMovies,
             'PaperlessBilling': paperlessBilling,
-            'MonthlyCharges': monthlyCharges,
-            'TotalCharges': totalCharges,
+            'PhoneService': phoneService,
             'InternetService_DSL': internetService_DSL,
             'InternetService_Fiber optic': internetService_Fiber,
             'InternetService_No': internetService_No,
+            'PaymentMethod_Electronic check': payment_ElectronicCheck,
+            'PaymentMethod_Mailed check': payment_MailedCheck,
+            'PaymentMethod_Bank transfer (automatic)': payment_Bank,
+            'PaymentMethod_Credit card (automatic)': payment_CreditCard,
             'Contract_Month-to-month': contract_Month,
             'Contract_One year': contract_OneYear,
             'Contract_Two year': contract_TwoYear,
-            'PaymentMethod_Bank transfer (automatic)': payment_Bank,
-            'PaymentMethod_Credit card (automatic)': payment_CreditCard,
-            'PaymentMethod_Electronic check': payment_ElectronicCheck,
-            'PaymentMethod_Mailed check': payment_MailedCheck
+            'TechSupport_No': techSupport_No,
+            'TechSupport_Yes': techSupport_Yes,
+            'TechSupport_No internet service': techSupport_No_internet_service,
+            'OnlineBackup_Yes': onlineBackup_Yes,
+            'OnlineBackup_No': onlineBackup_No,
+            'OnlineBackup_No internet service': onlineBackup_No_internet_service,
+            'DeviceProtection_No': deviceProtection_No,
+            'DeviceProtection_Yes': deviceProtection_Yes,
+            'DeviceProtection_No internet service': deviceProtection_No_internet_service,
+            'MultipleLines_No phone service': multipleLines_No_phone_service,
+            'MultipleLines_No': multipleLines_No,
+            'MultipleLines_Yes': multipleLines_Yes,
+            'StreamingTV_No': streamingTV_No,
+            'StreamingTV_Yes': streamingTV_Yes,
+            'StreamingTV_No internet service': streamingTV_No_internet_service,
+            'StreamingMovies_No': streamingMovies_No,
+            'StreamingMovies_Yes': streamingMovies_Yes,
+            'StreamingMovies_No internet service': streamingMovies_No_internet_service,
+            'SeniorCitizen': seniorCitizen,
+            'tenure': tenure,
+            'MonthlyCharges': monthlyCharges,
+            'TotalCharges': totalCharges
         };
+
+        // fit order
+        const featureOrder = [
+            'Partner', 'gender', 'Dependents', 'PaperlessBilling', 'PhoneService',
+            'InternetService_DSL', 'InternetService_Fiber optic',
+            'InternetService_No', 'PaymentMethod_Electronic check',
+            'PaymentMethod_Mailed check', 'PaymentMethod_Bank transfer (automatic)',
+            'PaymentMethod_Credit card (automatic)', 'Contract_Month-to-month',
+            'Contract_One year', 'Contract_Two year', 'TechSupport_No',
+            'TechSupport_Yes', 'TechSupport_No internet service',
+            'OnlineBackup_Yes', 'OnlineBackup_No',
+            'OnlineBackup_No internet service', 'DeviceProtection_No',
+            'DeviceProtection_Yes', 'DeviceProtection_No internet service',
+            'MultipleLines_No phone service', 'MultipleLines_No',
+            'MultipleLines_Yes', 'StreamingTV_No', 'StreamingTV_Yes',
+            'StreamingTV_No internet service', 'StreamingMovies_No',
+            'StreamingMovies_Yes', 'StreamingMovies_No internet service',
+            'SeniorCitizen', 'tenure', 'MonthlyCharges', 'TotalCharges'
+        ];
+
+        const orderedFeatures = featureOrder.map(featureName => {
+            return featuresObject[featureName];
+        });
+
+        return orderedFeatures;
     }
 });
