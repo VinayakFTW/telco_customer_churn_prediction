@@ -1,2 +1,2 @@
-.vscode
-scrapper.py
+__pycache__
+.venv
