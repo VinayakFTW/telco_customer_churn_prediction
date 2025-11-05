@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDA Dashboard - Telco Churn</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="/" class="nav-logo">Telco Churn</a>
+            <div class="nav-links">
+                <a href="/">Predictor</a>
+                <a href="/dashboard" class="active">Dashboard</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <h2>Exploratory Data Analysis Dashboard</h2>
+        
+        <h3>Overall Churn Distribution</h3>
+        <div class="plot-grid single">
+            <div class="plot-card">
+                <img src="{{ url_for('static', filename='images/churn_pie.png') }}" alt="Overall Churn Pie Chart">
+            </div>
+        </div>
+
+        <h3>Feature-based Churn (Pie Charts)</h3>
+        <div class="plot-grid">
+            <div class="plot-card">
+                <img src="{{ url_for('static', filename='images/SeniorCitizen_pie.png') }}" alt="SeniorCitizen Pie Chart">
+            </div>
+            <div class="plot-card">
+                <img src="{{ url_for('static', filename='images/InternetService_pie.png') }}" alt="InternetService Pie Chart">
+            </div>
+            <div class="plot-card">
+                <img src="{{ url_for('static', filename='images/StreamingTV_pie.png') }}" alt="StreamingTV Pie Chart">
+            </div>
+            <div class="plot-card">
+                <img src="{{ url_for('static', filename='images/StreamingMovies_pie.png') }}" alt="StreamingMovies Pie Chart">
+            </div>
+            <div class="plot-card">
+                <img src="{{ url_for('static', filename='images/Contract_pie.png') }}" alt="Contract Pie Chart">
+            </div>
+            <div class="plot-card">
+                <img src="{{ url_for('static', filename='images/PaymentMethod_pie.png') }}" alt="PaymentMethod Pie Chart">
+            </div>
+        </div>
+
+        <h3>Numerical Feature Distribution (Box Plots)</h3>
+        <div class="plot-grid">
+            <div class="plot-card">
+                <img src="{{ url_for('static', filename='images/tenure_box.png') }}" alt="Tenure Box Plot">
+            </div>
+            <div class="plot-card">
+                <img src="{{ url_for('static', filename='images/MonthlyCharges_box.png') }}" alt="MonthlyCharges Box Plot">
+            </div>
+        </div>
+
+        <h3>Feature Correlation</h3>
+        <div class="plot-grid single">
+            <div class="plot-card large">
+                <img src="{{ url_for('static', filename='images/correlation_heatmap.png') }}" alt="Correlation Heatmap">
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

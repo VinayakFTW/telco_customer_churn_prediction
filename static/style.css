@@ -1,0 +1,474 @@
+/* --- Global Setup & Variables --- */
+:root {
+    --font-family: 'Inter', sans-serif;
+    --bg-color: #111827; /* Dark Blue/Gray */
+    --card-color: rgba(31, 41, 55, 0.6); /* Semi-transparent */
+    --border-color: rgba(255, 255, 255, 0.1);
+    --text-primary: #F9FAFB;
+    --text-secondary: #9CA3AF;
+    --primary-accent: #22D3EE; /* Vibrant Cyan */
+    --safe-color: #10B981; /* Green */
+    --danger-color: #F472B6; /* Pink/Red */
+    --input-bg: rgba(255, 255, 255, 0.05);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    background-image: radial-gradient(circle at 10% 20%, rgba(34, 211, 238, 0.15), transparent 30%),
+                      radial-gradient(circle at 80% 90%, rgba(244, 114, 182, 0.15), transparent 30%);
+    background-attachment: fixed;
+    min-height: 100vh;
+}
+
+/* --- Main Card & Layout --- */
+.container {
+    width: 100%;
+    max-width: 900px;
+    margin: 3rem auto;
+    padding: 0 1rem;
+}
+
+.predictor-card {
+    background: var(--card-color);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 2.5rem 3rem;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.subtitle {
+    font-size: 1rem;
+    font-weight: 300;
+    text-align: center;
+    color: var(--text-secondary);
+    margin-bottom: 2.5rem;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem 2.5rem;
+    margin-bottom: 2.5rem;
+}
+
+fieldset {
+    border: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+legend {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--primary-accent);
+    margin-bottom: 1rem;
+    padding: 0;
+}
+
+/* --- Basic Form Elements --- */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+label {
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: var(--text-secondary);
+}
+
+input[type="number"],
+select {
+    width: 100%;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    color: var(--text-primary);
+    font-family: var(--font-family);
+    transition: all 0.2s ease;
+}
+
+input[type="number"]:focus,
+select:focus {
+    outline: none;
+    border-color: var(--primary-accent);
+    box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.3);
+}
+
+/* --- Custom Toggle Switch --- */
+.toggle-group {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 28px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-switch .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--input-bg);
+    border: 1px solid var(--border-color);
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.toggle-switch .slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background-color: var(--text-secondary);
+    transition: .4s;
+    border-radius: 50%;
+}
+
+.toggle-switch input:checked + .slider {
+    background-color: var(--primary-accent);
+    border-color: var(--primary-accent);
+}
+
+.toggle-switch input:checked + .slider:before {
+    transform: translateX(22px);
+    background-color: white;
+}
+
+/* --- Custom Mini Toggles (for add-ons) --- */
+.sub-toggles {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+}
+.mini-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.6rem 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.mini-toggle:has(input:checked) {
+    background: rgba(34, 211, 238, 0.1);
+    border-color: var(--primary-accent);
+}
+.mini-toggle input {
+    accent-color: var(--primary-accent);
+}
+.mini-toggle span {
+    color: var(--text-primary);
+    font-weight: 400;
+}
+
+
+/* --- Custom Range Slider --- */
+.slider-group label {
+    display: flex;
+    justify-content: space-between;
+}
+.slider-group span {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    background: var(--input-bg);
+    border-radius: 5px;
+    outline: none;
+    border: 1px solid var(--border-color);
+}
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: var(--primary-accent);
+    cursor: pointer;
+    border-radius: 50%;
+    border: 3px solid white;
+}
+
+/* --- Custom Segmented Control --- */
+.segmented-control {
+    display: flex;
+    width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    background: var(--input-bg);
+}
+.segmented-control input[type="radio"] {
+    display: none;
+}
+.segmented-control label {
+    flex: 1;
+    padding: 0.75rem 0.5rem;
+    text-align: center;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+.segmented-control input[type="radio"]:checked + label {
+    background: var(--primary-accent);
+    color: var(--bg-color);
+    box-shadow: 0 2px 10px rgba(34, 211, 238, 0.3);
+}
+
+/* --- Submit Button --- */
+#predict-btn {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--bg-color);
+    background-image: linear-gradient(to right, var(--primary-accent) 0%, #67E8F9 100%);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+#predict-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(34, 211, 238, 0.3);
+}
+
+/* --- Result Container --- */
+.hidden {
+    display: none !important;
+}
+
+#result-container {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-top: 2rem;
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#result-container.result-safe {
+    background: rgba(16, 185, 129, 0.1);
+    border-color: var(--safe-color);
+}
+#result-container.result-danger {
+    background: rgba(244, 114, 182, 0.1);
+    border-color: var(--danger-color);
+}
+
+.result-icon {
+    font-size: 2rem;
+}
+.result-safe .result-icon { color: var(--safe-color); }
+.result-danger .result-icon { color: var(--danger-color); }
+
+.result-text h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+.result-safe .result-text h3 { color: var(--safe-color); }
+.result-danger .result-text h3 { color: var(--danger-color); }
+
+.result-text p {
+    font-size: 1rem;
+    color: var(--text-secondary);
+}
+
+/* --- Loader Animation --- */
+.loader {
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #FFF;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+}
+#predict-btn .btn-text.hidden { display: none; }
+#predict-btn .loader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -10px;
+    margin-left: -10px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* --- Responsive Design --- */
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    .predictor-card {
+        padding: 2rem 1.5rem;
+    }
+    .dashboard-container {
+        padding: 1.5rem 1rem;
+    }
+}
+
+/* Navigation Bar */
+nav {
+    width: 100%;
+    background-color: #ffffff;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 1rem 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #333;
+    text-decoration: none;
+}
+
+.nav-links a {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #555;
+    text-decoration: none;
+    margin-left: 1.5rem;
+    padding: 0.5rem;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.nav-links a:hover {
+    color: #007bff;
+}
+
+.nav-links a.active {
+    color: #007bff;
+    border-bottom-color: #007bff;
+}
+
+/* Dashboard Styles */
+.dashboard-container {
+    max-width: 1400px;
+    margin: 3rem auto;
+    padding: 2rem 3rem;
+    background-color: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.dashboard-container h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #333;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.dashboard-container h3 {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: #444;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 0.5rem;
+}
+
+.plot-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 1.5rem;
+}
+
+.plot-grid.single {
+     grid-template-columns: 1fr;
+}
+
+.plot-card {
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    padding: 1rem;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.plot-card.large {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.plot-card img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+}
