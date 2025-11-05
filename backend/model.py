@@ -39,7 +39,7 @@ def load_model(model):
 
 # train_model('lr')
 # train_model('rfc')
-# # train_model('xgbc')
+# train_model('xgbc')
 # pred,score1=predict_model(load_model('lr'))
 # pred,score2=predict_model(load_model('rfc'))
 # pred,score3=predict_model(load_model('xgbc'))

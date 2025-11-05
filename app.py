@@ -1,7 +1,7 @@
 import pandas as pd
 import joblib
 from flask import Flask, request, jsonify, render_template
-from model import load_model, new_pred
+from backend.model import load_model, new_pred
 
 app = Flask(__name__)
 
