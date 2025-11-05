@@ -29,7 +29,7 @@ def predict_model(model):
 
     na,x_test,na,y_test = train_test_split(features,target,test_size=0.3,random_state=1)
     
-    return model.predict(x_test),model.score(x_test,y_test)
+    return model.predict(x_test),model.score(x_test,y_test),y_test
 
 def new_pred(model,val):
     return model.predict(val)
