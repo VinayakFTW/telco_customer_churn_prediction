@@ -6,7 +6,7 @@ from backend.model import load_model, new_pred
 app = Flask(__name__)
 
 try:
-    model = load_model(f'backend\\lr')
+    model = load_model(f'backend/lr')
 except FileNotFoundError:
     print("FATAL: model.pkl not found. Please run train_model() from model.py first.")
     model = None
